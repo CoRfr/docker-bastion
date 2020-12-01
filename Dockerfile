@@ -20,6 +20,8 @@ RUN addgroup -S -g ${GID} ${GROUP} \
     && sed -i "s/${USER}:!/${USER}:*/g" /etc/shadow \
     && set -x \
     && apk add --no-cache openssh-server \
+                          openssh-server-pam \
+                          linux-pam \
     && echo "Welcome to Bastion!" > /etc/motd \
     && chmod +x /usr/sbin/bastion \
     && mkdir -p ${HOST_KEYS_PATH} \

@@ -66,6 +66,13 @@ else
     CONFIG_LISTEN_PORT="-o Port=22"
 fi
 
+if [ "x$OPEN_ACCESS" = "xtrue" ]; then
+    echo "Warning: server will accept all incoming connections!!!"
+    CONFIG_ACCESS="-o UsePAM=yes"
+    echo "bastion" >/etc/sshd_allowed_users
+    echo "auth sufficient pam_listfile.so item=user sense=allow file=/etc/sshd_allowed_users onerr=fail" > /etc/pam.d/sshd
+fi
+
 /usr/sbin/sshd -D -e -4 \
     -o "HostKey=$HOST_KEYS_PATH/ssh_host_rsa_key" \
     -o "HostKey=$HOST_KEYS_PATH/ssh_host_dsa_key" \
@@ -84,4 +91,5 @@ fi
     $CONFIG_TRUSTED_USER_CA_KEYS \
     $CONFIG_AUTHORIZED_PRINCIPALS_FILE \
     $CONFIG_LISTEN_ADDRESS \
-    $CONFIG_LISTEN_PORT
+    $CONFIG_LISTEN_PORT \
+    $CONFIG_ACCESS
